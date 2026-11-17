@@ -33,7 +33,6 @@ body {
 }
 .app { max-width: 440px; margin: auto; padding: 14px; }
 
-/* Topbar */
 .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .brand { display: flex; align-items: center; gap: 10px; }
 .logo {
@@ -47,14 +46,12 @@ body {
 
 .pill { font-size: 9.5px; font-weight: 700; padding: 4px 10px; border-radius: 20px; background: rgba(52, 211, 153, 0.15); color: var(--green); border: 1px solid rgba(52, 211, 153, 0.3); display: inline-flex; align-items: center; gap: 4px; }
 
-/* Room Selector */
 .room-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 10px; }
 .room-selector { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; flex: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 .room-selector span.room-name { color: var(--blue); display: flex; align-items: center; gap: 6px; }
 .time-box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 11px; color: var(--muted); text-align: right; }
 .time-box strong { display: block; color: var(--text); font-size: 11.5px; }
 
-/* Mic Banner */
 .mic-banner { background: linear-gradient(135deg, rgba(30, 27, 75, 0.85), rgba(17, 24, 39, 0.95)); border: 1px solid rgba(192, 132, 252, 0.35); border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; box-shadow: 0 8px 20px rgba(0,0,0,0.25); cursor: pointer; transition: border-color 0.2s; }
 .mic-banner:hover { border-color: var(--purple); }
 .mic-info { display: flex; align-items: center; gap: 10px; }
@@ -71,13 +68,11 @@ body {
 .btn-pause { background: var(--panel); border: 1px solid var(--line); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
 .btn-pause:hover { border-color: var(--blue); }
 
-/* Heading */
 .heading { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-end; }
 .heading h2 { font-size: 18px; font-weight: 800; margin: 0 0 2px; letter-spacing: -0.4px; }
 .heading p { margin: 0; color: var(--muted); font-size: 10.5px; }
-.badge-precision { font-size: 9.5px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.12); color: var(--blue); border: 1px solid rgba(56, 189, 248, 0.3); }
+.badge-precision { font-size: 9.5px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.12); color: var(--blue); border: 1px solid rgba(56, 189, 248, 0.3); cursor: pointer; }
 
-/* Metrics Grid (2x2) */
 .grid-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
 .metric-card { background: var(--panel-glass); backdrop-filter: blur(10px); border: 1px solid var(--line); border-radius: 14px; padding: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
 .metric-top { display: flex; justify-content: space-between; align-items: center; font-size: 9.5px; font-weight: 700; color: var(--muted); letter-spacing: 0.5px; }
@@ -90,22 +85,20 @@ body {
 .badge.warn { background: rgba(250, 204, 21, 0.15); color: var(--yellow); }
 .badge.bad { background: rgba(251, 113, 133, 0.15); color: var(--red); }
 .noise-bar { width: 100%; height: 3.5px; background: rgba(255,255,255,0.08); border-radius: 2px; margin-top: 6px; overflow: hidden; }
-.noise-bar-fill { height: 100%; width: 42%; background: linear-gradient(90deg, var(--blue), var(--purple)); border-radius: 2px; }
+.noise-bar-fill { height: 100%; width: 42%; background: linear-gradient(90deg, var(--blue), var(--purple)); border-radius: 2px; transition: width 0.15s ease; }
 
-/* Global Quality Card */
 .quality-card { background: var(--panel-glass); backdrop-filter: blur(10px); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 14px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
 .quality-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .quality-header small { color: var(--cyan); font-size: 8.5px; font-weight: 800; letter-spacing: 1.1px; text-transform: uppercase; display: block; margin-bottom: 1px; }
 .quality-header h3 { font-size: 14px; font-weight: 700; margin: 0; }
 .quality-main { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-.quality-ring { width: 62px; height: 62px; border-radius: 50%; background: radial-gradient(circle, rgba(52, 211, 153, 0.25) 0%, rgba(17, 24, 39, 0.95) 100%); border: 2.5px solid var(--green); display: grid; place-items: center; font-size: 28px; box-shadow: 0 0 16px rgba(52, 211, 153, 0.25); flex-shrink: 0; }
+.quality-ring { width: 62px; height: 62px; border-radius: 50%; background: radial-gradient(circle, rgba(52, 211, 153, 0.25) 0%, rgba(17, 24, 39, 0.95) 100%); border: 2.5px solid var(--green); display: grid; place-items: center; font-size: 28px; box-shadow: 0 0 16px rgba(52, 211, 153, 0.25); flex-shrink: 0; transition: all 0.3s ease; }
 .quality-desc strong { display: block; font-size: 12px; margin-bottom: 2px; color: #fff; }
 .quality-desc p { margin: 0; font-size: 10.5px; color: var(--muted); line-height: 1.35; }
 .sub-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding-top: 10px; border-top: 1px solid var(--line); text-align: center; }
 .sub-metric-item span { display: block; font-size: 9px; color: var(--muted); margin-bottom: 1px; }
 .sub-metric-item strong { font-size: 11.5px; font-weight: 700; color: var(--text); }
 
-/* Chart Card */
 .chart-card { background: var(--panel-glass); backdrop-filter: blur(10px); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 14px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
 .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .chart-header h3 { font-size: 13.5px; font-weight: 700; margin: 0; }
@@ -119,13 +112,11 @@ body {
 .chart-wrap { height: 125px; position: relative; }
 .chart-wrap canvas { width: 100%; height: 100%; display: block; }
 
-/* Bottom Nav */
 .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(13, 19, 32, 0.96); backdrop-filter: blur(12px); border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(5, 1fr); padding: 6px 0 10px; z-index: 100; }
 .nav-item { background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 9px; font-weight: 600; cursor: pointer; }
 .nav-item.active { color: var(--cyan); }
 .nav-item svg { width: 18px; height: 18px; }
 
-/* Hidden Settings Panel */
 .panel-config { background: var(--panel-glass); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 14px; display: none; }
 .panel-config.visible { display: block; }
 .field-row { display: flex; gap: 10px; margin-bottom: 8px; align-items: center; justify-content: space-between; font-size: 10.5px; color: var(--muted); }
@@ -160,7 +151,7 @@ body {
   </div>
  </div>
 
- <div class="mic-banner" id="micBanner">
+ <div class="mic-banner" id="micBanner" title="Toca para activar micrófono">
   <div class="mic-info">
    <div class="mic-icon-wrap" id="micIconIndicator">🎙️</div>
    <div class="mic-text">
@@ -179,16 +170,16 @@ body {
  <section class="heading">
   <div>
    <h2>Resumen de la Sala</h2>
-   <p>Mediciones en tiempo real y estimación IoT</p>
+   <p id="locationSub">Mediciones en tiempo real y GPS</p>
   </div>
-  <span class="badge-precision">Alta Precisión</span>
+  <span class="badge-precision" id="gpsBtn">🌍 Activar GPS</span>
  </section>
 
  <div class="grid-metrics">
   <article class="metric-card">
    <div class="metric-top"><span>TEMPERATURA</span><span>🌡️</span></div>
    <div class="value metric-val"><span id="tempValue">22.6</span><span>°C</span></div>
-   <div class="metric-sub">Modelo térmico orientativo</div>
+   <div class="metric-sub" id="tempSub">Modelo térmico orientativo</div>
    <div><span class="badge ok" id="tempStatus">ÓPTIMA</span></div>
   </article>
 
@@ -210,7 +201,7 @@ body {
   <article class="metric-card">
    <div class="metric-top"><span>HUMEDAD</span><span>💧</span></div>
    <div class="value metric-val"><span id="humValue">54</span><span>% HR</span></div>
-   <div class="metric-sub">Confort respiratorio</div>
+   <div class="metric-sub" id="humSub">Confort respiratorio</div>
    <div><span class="badge ok" id="humStatus">CONFORT</span></div>
   </article>
  </div>
@@ -293,6 +284,7 @@ body {
 const $=id=>document.getElementById(id);
 let paused=false, micStream=null, audioContext=null, analyser=null, micFrame=null;
 let co2=468, temp=22.6, noise=42, hum=54, history=[];
+let outdoorTemp=null, outdoorHum=null;
 const outdoorCO2=420;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
@@ -309,16 +301,21 @@ function updateStatus(){
  const p=getParams(), vol=p.area*p.height, dt=3;
  const gen=(p.people*0.004/1000)/vol*1e6;
  const rem=(p.ach/3600)*(co2-outdoorCO2);
+ 
  if(!paused){
   co2=clamp(co2+(gen-rem)*dt, 400, 3000);
-  temp=clamp(temp + (p.people*75/(vol*1200) - (p.ach/3600)*(temp-21))*dt, 16, 32);
-  hum=clamp(50 + (p.people*0.05) - (p.ach*0.5), 30, 80);
+  const targetBaseTemp = outdoorTemp !== null ? outdoorTemp + 4 : 21;
+  temp=clamp(temp + (p.people*75/(vol*1200) - (p.ach/3600)*(temp-targetBaseTemp))*dt, 16, 34);
+  const targetHum = outdoorHum !== null ? outdoorHum + 10 : 50;
+  hum=clamp(targetHum + (p.people*0.05) - (p.ach*0.5), 25, 85);
  }
 
  const co2State=co2<1000?['ADECUADO','ok']:co2<1500?['ELEVADO','warn']:['ALTO','bad'];
- const tempState=temp>=20&&temp<=26?['ÓPTIMA','ok']:['REVISAR','warn'];
- const noiseState=noise<50?['MODERADO','ok']:noise<75?['ALTO','warn']:['CRÍTICO','bad'];
- const humState=hum>=40&&hum<=65?['CONFORT','ok']:['REVISAR','warn'];
+ const tempState=temp>=19&&temp<=26?['ÓPTIMA','ok']:['REVISAR','warn'];
+ 
+ // Umbrales de ruido en tiempo real según el micrófono
+ const noiseState = noise < 55 ? ['MODERADO','ok'] : noise < 75 ? ['ALTO','warn'] : ['CRÍTICO','bad'];
+ const humState=hum>=35&&hum<=65?['CONFORT','ok']:['REVISAR','warn'];
 
  setBadge('co2Status', co2State);
  setBadge('tempStatus', tempState);
@@ -335,9 +332,13 @@ function updateStatus(){
  $('legendNoise').textContent=Math.round(noise)+' dB';
  $('noiseBarFill').style.width=clamp(noise,5,100)+'%';
 
- const globalLevel = co2State[1]==='bad'||noiseState[1]==='bad' ? 'bad' : co2State[1]==='warn'||noiseState[1]==='warn' ? 'warn' : 'ok';
+ if(noise < 55) { $('noiseHint').textContent='Silencioso'; }
+ else if(noise < 75) { $('noiseHint').textContent='Conversación / Murmullos'; }
+ else { $('noiseHint').textContent='¡Muy alto / Gritos!'; }
+
+ const globalLevel = co2State[1]==='bad'||noiseState[1]==='bad'||tempState[1]==='bad' ? 'bad' : co2State[1]==='warn'||noiseState[1]==='warn'||noiseState[1]==='warn' ? 'warn' : 'ok';
  const emojiEl=$('qualityEmoji');
- const score = globalLevel==='ok'?88:globalLevel==='warn'?72:45;
+ const score = globalLevel==='ok'?88:globalLevel==='warn'?72:42;
  
  if(globalLevel==='bad'){
   emojiEl.textContent='😠';
@@ -346,7 +347,7 @@ function updateStatus(){
   $('globalBadge').className='badge bad';
   $('globalBadge').textContent=`Crítica (${score}/100)`;
   $('qualityTitle').textContent='Condiciones ambientales críticas';
-  $('qualityText').textContent='El CO₂ o nivel sonoro superan los límites recomendados. Aumente la ventilación.';
+  $('qualityText').textContent='El ruido ambiental o el CO₂ superan los límites recomendados. Se requiere orden y ventilación.';
  } else if(globalLevel==='warn'){
   emojiEl.textContent='😐';
   emojiEl.style.borderColor='var(--yellow)';
@@ -354,7 +355,7 @@ function updateStatus(){
   $('globalBadge').className='badge warn';
   $('globalBadge').textContent=`Regular (${score}/100)`;
   $('qualityTitle').textContent='Atención requerida en el aula';
-  $('qualityText').textContent='Algunas variables muestran niveles moderados. Se sugiere monitoreo constante.';
+  $('qualityText').textContent='El nivel acústico o las variables muestran aumentos moderados. Mantenga la atención.';
  } else {
   emojiEl.textContent='😊';
   emojiEl.style.borderColor='var(--green)';
@@ -362,7 +363,7 @@ function updateStatus(){
   $('globalBadge').className='badge ok';
   $('globalBadge').textContent=`Óptima (${score}/100)`;
   $('qualityTitle').textContent='Condición propicia para el aprendizaje';
-  $('qualityText').textContent='La ventilación cruzada mantiene el CO₂ bajo los 500 ppm y el nivel acústico permite alta concentración docente.';
+  $('qualityText').textContent='La ventilación cruzada mantiene el CO₂ bajo control y el nivel acústico permite alta concentración docente.';
  }
 
  $('subTerm').textContent=Math.round(100 - Math.abs(temp-22)*6)+'%';
@@ -390,7 +391,7 @@ function drawChart(){
  const sets=[
   {key:'temp', min:15, max:30, color:'#38bdf8'},
   {key:'co2', min:400, max:1500, color:'#22d3ee'},
-  {key:'noise', min:20, max:90, color:'#c084fc'}
+  {key:'noise', min:20, max:100, color:'#c084fc'}
  ];
 
  sets.forEach(s=>{
@@ -405,6 +406,39 @@ function drawChart(){
  });
 }
 
+// Geolocalización y Clima real
+function requestGeolocation(){
+ if(!navigator.geolocation){
+  alert('Tu navegador no soporta geolocalización.');
+  return;
+ }
+ $('gpsBtn').textContent = '📍 Buscando...';
+ navigator.geolocation.getCurrentPosition(async pos=>{
+  const lat = pos.coords.latitude;
+  const lon = pos.coords.longitude;
+  try {
+   const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m`);
+   const data = await res.json();
+   if(data && data.current){
+    outdoorTemp = data.current.temperature_2m;
+    outdoorHum = data.current.relative_humidity_2m;
+    $('locationSub').textContent = `GPS activo · Ext: ${outdoorTemp}°C, ${outdoorHum}%`;
+    $('gpsBtn').textContent = '✓ GPS Sincronizado';
+    $('gpsBtn').style.borderColor = 'var(--green)';
+    $('gpsBtn').style.color = 'var(--green)';
+   }
+  } catch(e) {
+   $('gpsBtn').textContent = '⚠️ Error Clima';
+  }
+ }, err=>{
+  alert('No se pudo obtener la ubicación. Permiso denegado.');
+  $('gpsBtn').textContent = '🌍 Activar GPS';
+ });
+}
+
+$('gpsBtn').onclick = requestGeolocation;
+
+// Micrófono con respuesta inmediata a volumen/gritos
 async function toggleMic(){
  if(micStream){
   stopMic();
@@ -413,7 +447,8 @@ async function toggleMic(){
    micStream=await navigator.mediaDevices.getUserMedia({audio:true});
    audioContext=new (window.AudioContext||window.webkitAudioContext)();
    const src=audioContext.createMediaStreamSource(micStream);
-   analyser=audioContext.createAnalyser(); analyser.fftSize=512;
+   analyser=audioContext.createAnalyser(); 
+   analyser.fftSize=256;
    src.connect(analyser);
    const data=new Uint8Array(analyser.frequencyBinCount);
    
@@ -422,17 +457,21 @@ async function toggleMic(){
     analyser.getByteFrequencyData(data);
     let sum=data.reduce((a,b)=>a+b,0);
     let avg=sum/data.length;
-    noise=clamp(Math.round(avg*1.2 + 25), 30, 95);
+    
+    // Mapeo dinámico sensible a gritos y voz alta
+    let calculatedDb = Math.round(avg * 1.8 + 30);
+    noise = clamp(calculatedDb, 35, 98);
+
     micFrame=requestAnimationFrame(sampleAudio);
    }
    sampleAudio();
    $('micIconIndicator').textContent='🔊';
    $('micStateText').textContent='Micrófono Activo';
-   $('micSubText').textContent='Midiendo decibeles';
+   $('micSubText').textContent='Midiendo volumen en vivo';
    $('micBarsAnim').style.display='flex';
    $('micBanner').style.borderColor='var(--purple)';
   }catch(e){
-   alert('No se pudo acceder al micrófono.');
+   alert('No se pudo acceder al micrófono. Asegúrate de dar permisos.');
   }
  }
 }
@@ -473,9 +512,10 @@ $('pauseBtn').onclick=(e)=>{
 setInterval(()=>{
  $('clock').textContent=new Date().toLocaleTimeString('es-CL');
  updateStatus();
-}, 3000);
+}, 2000);
 
 updateStatus();
 </script>
 </body>
+</html>
 </html>
