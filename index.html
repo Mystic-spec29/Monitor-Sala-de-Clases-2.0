@@ -71,7 +71,7 @@ body {
 .heading { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-end; }
 .heading h2 { font-size: 18px; font-weight: 800; margin: 0 0 2px; letter-spacing: -0.4px; }
 .heading p { margin: 0; color: var(--muted); font-size: 10.5px; }
-.badge-precision { font-size: 9.5px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.12); color: var(--blue); border: 1px solid rgba(56, 189, 248, 0.3); cursor: pointer; }
+.badge-precision { font-size: 9.5px; font-weight: 700; padding: 4px 10px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: var(--blue); border: 1px solid rgba(56, 189, 248, 0.4); cursor: pointer; display: inline-block; text-align: center; }
 
 .grid-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
 .metric-card { background: var(--panel-glass); backdrop-filter: blur(10px); border: 1px solid var(--line); border-radius: 14px; padding: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
@@ -85,14 +85,14 @@ body {
 .badge.warn { background: rgba(250, 204, 21, 0.15); color: var(--yellow); }
 .badge.bad { background: rgba(251, 113, 133, 0.15); color: var(--red); }
 .noise-bar { width: 100%; height: 3.5px; background: rgba(255,255,255,0.08); border-radius: 2px; margin-top: 6px; overflow: hidden; }
-.noise-bar-fill { height: 100%; width: 42%; background: linear-gradient(90deg, var(--blue), var(--purple)); border-radius: 2px; transition: width 0.15s ease; }
+.noise-bar-fill { height: 100%; width: 42%; background: linear-gradient(90deg, var(--blue), var(--purple)); border-radius: 2px; transition: width 0.08s ease; }
 
 .quality-card { background: var(--panel-glass); backdrop-filter: blur(10px); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 14px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
 .quality-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .quality-header small { color: var(--cyan); font-size: 8.5px; font-weight: 800; letter-spacing: 1.1px; text-transform: uppercase; display: block; margin-bottom: 1px; }
 .quality-header h3 { font-size: 14px; font-weight: 700; margin: 0; }
 .quality-main { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-.quality-ring { width: 62px; height: 62px; border-radius: 50%; background: radial-gradient(circle, rgba(52, 211, 153, 0.25) 0%, rgba(17, 24, 39, 0.95) 100%); border: 2.5px solid var(--green); display: grid; place-items: center; font-size: 28px; box-shadow: 0 0 16px rgba(52, 211, 153, 0.25); flex-shrink: 0; transition: all 0.3s ease; }
+.quality-ring { width: 62px; height: 62px; border-radius: 50%; background: radial-gradient(circle, rgba(52, 211, 153, 0.25) 0%, rgba(17, 24, 39, 0.95) 100%); border: 2.5px solid var(--green); display: grid; place-items: center; font-size: 28px; box-shadow: 0 0 16px rgba(52, 211, 153, 0.25); flex-shrink: 0; transition: all 0.2s ease; }
 .quality-desc strong { display: block; font-size: 12px; margin-bottom: 2px; color: #fff; }
 .quality-desc p { margin: 0; font-size: 10.5px; color: var(--muted); line-height: 1.35; }
 .sub-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding-top: 10px; border-top: 1px solid var(--line); text-align: center; }
@@ -172,7 +172,9 @@ body {
    <h2>Resumen de la Sala</h2>
    <p id="locationSub">Mediciones en tiempo real y GPS</p>
   </div>
-  <span class="badge-precision" id="gpsBtn">🌍 Activar GPS</span>
+  <div>
+   <span class="badge-precision" id="gpsBtn">🌍 Sincronizar GPS</span>
+  </div>
  </section>
 
  <div class="grid-metrics">
@@ -312,9 +314,7 @@ function updateStatus(){
 
  const co2State=co2<1000?['ADECUADO','ok']:co2<1500?['ELEVADO','warn']:['ALTO','bad'];
  const tempState=temp>=19&&temp<=26?['ÓPTIMA','ok']:['REVISAR','warn'];
- 
- // Umbrales de ruido en tiempo real según el micrófono
- const noiseState = noise < 55 ? ['MODERADO','ok'] : noise < 75 ? ['ALTO','warn'] : ['CRÍTICO','bad'];
+ const noiseState = noise < 55 ? ['MODERADO','ok'] : noise < 75 ?['ALTO','warn'] : ['CRÍTICO','bad'];
  const humState=hum>=35&&hum<=65?['CONFORT','ok']:['REVISAR','warn'];
 
  setBadge('co2Status', co2State);
@@ -336,7 +336,7 @@ function updateStatus(){
  else if(noise < 75) { $('noiseHint').textContent='Conversación / Murmullos'; }
  else { $('noiseHint').textContent='¡Muy alto / Gritos!'; }
 
- const globalLevel = co2State[1]==='bad'||noiseState[1]==='bad'||tempState[1]==='bad' ? 'bad' : co2State[1]==='warn'||noiseState[1]==='warn'||noiseState[1]==='warn' ? 'warn' : 'ok';
+ const globalLevel = co2State[1]==='bad'||noiseState[1]==='bad'||tempState[1]==='bad' ? 'bad' : co2State[1]==='warn'||noiseState[1]==='warn' ? 'warn' : 'ok';
  const emojiEl=$('qualityEmoji');
  const score = globalLevel==='ok'?88:globalLevel==='warn'?72:42;
  
@@ -406,13 +406,10 @@ function drawChart(){
  });
 }
 
-// Geolocalización y Clima real
+// Solicitud GPS automática al iniciar
 function requestGeolocation(){
- if(!navigator.geolocation){
-  alert('Tu navegador no soporta geolocalización.');
-  return;
- }
- $('gpsBtn').textContent = '📍 Buscando...';
+ if(!navigator.geolocation) return;
+ $('gpsBtn').textContent = '📍 Localizando...';
  navigator.geolocation.getCurrentPosition(async pos=>{
   const lat = pos.coords.latitude;
   const lon = pos.coords.longitude;
@@ -428,17 +425,16 @@ function requestGeolocation(){
     $('gpsBtn').style.color = 'var(--green)';
    }
   } catch(e) {
-   $('gpsBtn').textContent = '⚠️ Error Clima';
+   $('gpsBtn').textContent = '🌍 Sincronizar GPS';
   }
  }, err=>{
-  alert('No se pudo obtener la ubicación. Permiso denegado.');
-  $('gpsBtn').textContent = '🌍 Activar GPS';
- });
+  $('gpsBtn').textContent = '🌍 Sincronizar GPS';
+ }, {timeout: 10000});
 }
 
 $('gpsBtn').onclick = requestGeolocation;
 
-// Micrófono con respuesta inmediata a volumen/gritos
+// Micrófono con ultra-baja latencia y alta sensibilidad
 async function toggleMic(){
  if(micStream){
   stopMic();
@@ -448,7 +444,8 @@ async function toggleMic(){
    audioContext=new (window.AudioContext||window.webkitAudioContext)();
    const src=audioContext.createMediaStreamSource(micStream);
    analyser=audioContext.createAnalyser(); 
-   analyser.fftSize=256;
+   analyser.fftSize=128; // Mayor velocidad de respuesta
+   analyser.smoothingTimeConstant = 0.2; // Menos retraso (más inmediato)
    src.connect(analyser);
    const data=new Uint8Array(analyser.frequencyBinCount);
    
@@ -458,9 +455,9 @@ async function toggleMic(){
     let sum=data.reduce((a,b)=>a+b,0);
     let avg=sum/data.length;
     
-    // Mapeo dinámico sensible a gritos y voz alta
-    let calculatedDb = Math.round(avg * 1.8 + 30);
-    noise = clamp(calculatedDb, 35, 98);
+    // Cálculo inmediato y sensible a la voz/gritos
+    let calculatedDb = Math.round(avg * 2.2 + 28);
+    noise = clamp(calculatedDb, 35, 99);
 
     micFrame=requestAnimationFrame(sampleAudio);
    }
@@ -471,7 +468,7 @@ async function toggleMic(){
    $('micBarsAnim').style.display='flex';
    $('micBanner').style.borderColor='var(--purple)';
   }catch(e){
-   alert('No se pudo acceder al micrófono. Asegúrate de dar permisos.');
+   alert('No se pudo acceder al micrófono. Permiso denegado.');
   }
  }
 }
@@ -512,10 +509,13 @@ $('pauseBtn').onclick=(e)=>{
 setInterval(()=>{
  $('clock').textContent=new Date().toLocaleTimeString('es-CL');
  updateStatus();
-}, 2000);
+}, 1500);
 
-updateStatus();
+// Lanzar GPS automáticamente al cargar la página
+window.addEventListener('load', () => {
+ requestGeolocation();
+ updateStatus();
+});
 </script>
 </body>
-</html>
 </html>
