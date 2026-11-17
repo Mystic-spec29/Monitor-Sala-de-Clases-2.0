@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#090d16">
+<title>Monitoreo de sala de clases</title>
+<style>
+:root {
+  --bg: #090d16;
+  --panel: #111827;
+  --panel-glass: rgba(17, 24, 39, 0.82);
+  --line: #1f2a40;
+  --text: #f3f4f6;
+  --muted: #8a99af;
+  --blue: #38bdf8;
+  --cyan: #22d3ee;
+  --purple: #c084fc;
+  --green: #34d399;
+  --yellow: #facc15;
+  --red: #fb7185;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  margin: 0;
+  background: 
+    radial-gradient(circle at 50% -10%, rgba(56, 189, 248, 0.12) 0, transparent 40%),
+    radial-gradient(circle at 90% 30%, rgba(192, 132, 252, 0.07) 0, transparent 35%),
+    var(--bg);
+  color: var(--text);
+  font: 12.5px/1.4 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding-bottom: 80px;
+}
+.app { max-width: 440px; margin: auto; padding: 14px; }
+
+/* Topbar */
+.topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.logo {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, #38bdf8, #22d3ee);
+  display: grid; place-items: center; box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
+}
+.logo svg { width: 18px; height: 18px; color: #090d16; }
+.brand h1 { font-size: 13px; font-weight: 800; margin: 0; letter-spacing: 0.4px; }
+.brand p { margin: 1px 0 0; color: var(--cyan); font-size: 8.5px; font-weight: 700; letter-spacing: 0.9px; }
+
+.pill { font-size: 9.5px; font-weight: 700; padding: 4px 10px; border-radius: 20px; background: rgba(52, 211, 153, 0.15); color: var(--green); border: 1px solid rgba(52, 211, 153, 0.3); display: inline-flex; align-items: center; gap: 4px; }
+
+/* Room Selector */
+.room-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 10px; }
+.room-selector { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; flex: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.room-selector span.room-name { color: var(--blue); display: flex; align-items: center; gap: 6px; }
+.time-box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 11px; color: var(--muted); text-align: right; }
+.time-box strong { display: block; color: var(--text); font-size: 11.5px; }
+
+/* Mic Banner */
+.mic-banner { background: linear-gradient(135deg, rgba(30, 27, 75, 0.85), rgba(17, 24, 39, 0.95)); border: 1px solid rgba(192, 132, 252, 0.35); border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; box-shadow: 0 8px 20px rgba(0,0,0,0.25); cursor: pointer; transition: border-color 0.2s; }
+.mic-banner:hover { border-color: var(--purple); }
+.mic-info { display: flex; align-items: center; gap: 10px; }
+.mic-icon-wrap { width: 34px; height: 34px; border-radius: 50%; background: rgba(192, 132, 252, 0.2); display: grid; place-items: center; color: var(--purple); font-size: 15px; }
+.mic-text strong { display: block; font-size: 12.5px; color: #fff; }
+.mic-text span { font-size: 10px; color: var(--muted); }
+.mic-bars { display: flex; align-items: flex-end; gap: 2px; height: 16px; }
+.mic-bar { width: 3px; background: var(--purple); border-radius: 2px; animation: pulseBar 1.2s infinite ease-in-out; }
+.mic-bar:nth-child(2) { animation-delay: 0.2s; height: 12px; }
+.mic-bar:nth-child(3) { animation-delay: 0.4s; height: 16px; }
+.mic-bar:nth-child(4) { animation-delay: 0.1s; height: 8px; }
+@keyframes pulseBar { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1); } }
+
+.btn-pause { background: var(--panel); border: 1px solid var(--line); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.btn-pause:hover { border-color: var(--blue); }
+
+/* Heading */
+.heading { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-end; }
+.heading h2 { font-size: 18px; font-weight: 800; margin: 0 0 2px; letter-spacing: -0.4px; }
+.heading p { margin: 0; color: var(--muted); font-size: 10.5px; }
+.badge-precision { font-size: 9.5px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.12); color: var(--blue); border: 1px solid rgba(56, 189, 248, 0.3); }
+
+/* Metrics Grid (2x2) */
+.grid-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+.metric-card { background: var(--panel-glass); backdrop-filter: blur(10px); border: 1px solid var(--line); border-radius: 14px; padding: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
+.metric-top { display: flex; justify-content: space-between; align-items: center; font-size: 9.5px; font-weight: 700; color: var(--muted); letter-spacing: 0.5px; }
+.metric-top span:last-child { width: 24px; height: 24px; border-radius: 7px; background: rgba(255,255,255,0.04); display: grid; place-items: center; font-size: 12px; }
+.metric-val { font-size: 26px; font-weight: 800; letter-spacing: -1px; margin: 6px 0 2px; color: #fff; }
+.metric-val span { font-size: 12px; font-weight: 600; color: var(--muted); }
+.metric-sub { font-size: 9.5px; color: var(--muted); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 10px; font-size: 9px; font-weight: 700; letter-spacing: 0.3px; }
+.badge.ok { background: rgba(52, 211, 153, 0.15); color: var(--green); }
+.badge.warn { background: rgba(250, 204, 21, 0.15); color: var(--yellow); }
+.badge.bad { background: rgba(251, 113, 133, 0.15); color: var(--red); }
+.noise-bar { width: 100%; height: 3.5px; background: rgba(255,255,255,0.08); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.noise-bar-fill { height: 100%; width: 42%; background: linear-gradient(90deg, var(--blue), var(--purple)); border-radius: 2px; }
+
+/* Global Quality Card */
+.quality-card { background: var(--panel-glass); backdrop-filter: blur(10px); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 14px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+.quality-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.quality-header small { color: var(--cyan); font-size: 8.5px; font-weight: 800; letter-spacing: 1.1px; text-transform: uppercase; display: block; margin-bottom: 1px; }
+.quality-header h3 { font-size: 14px; font-weight: 700; margin: 0; }
+.quality-main { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.quality-ring { width: 62px; height: 62px; border-radius: 50%; background: radial-gradient(circle, rgba(52, 211, 153, 0.25) 0%, rgba(17, 24, 39, 0.95) 100%); border: 2.5px solid var(--green); display: grid; place-items: center; font-size: 28px; box-shadow: 0 0 16px rgba(52, 211, 153, 0.25); flex-shrink: 0; }
+.quality-desc strong { display: block; font-size: 12px; margin-bottom: 2px; color: #fff; }
+.quality-desc p { margin: 0; font-size: 10.5px; color: var(--muted); line-height: 1.35; }
+.sub-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding-top: 10px; border-top: 1px solid var(--line); text-align: center; }
+.sub-metric-item span { display: block; font-size: 9px; color: var(--muted); margin-bottom: 1px; }
+.sub-metric-item strong { font-size: 11.5px; font-weight: 700; color: var(--text); }
+
+/* Chart Card */
+.chart-card { background: var(--panel-glass); backdrop-filter: blur(10px); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 14px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+.chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.chart-header h3 { font-size: 13.5px; font-weight: 700; margin: 0; }
+.chart-header small { color: var(--muted); font-size: 9.5px; display: block; }
+.time-tabs { display: flex; gap: 3px; background: rgba(0,0,0,0.3); padding: 2px; border-radius: 7px; }
+.time-tab { background: none; border: none; color: var(--muted); font-size: 9.5px; font-weight: 600; padding: 3px 7px; border-radius: 5px; cursor: pointer; }
+.time-tab.active { background: var(--blue); color: #090d16; }
+.chart-legend { display: flex; gap: 10px; font-size: 9.5px; color: var(--muted); margin-bottom: 8px; }
+.chart-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.dot { width: 5px; height: 5px; border-radius: 50%; }
+.chart-wrap { height: 125px; position: relative; }
+.chart-wrap canvas { width: 100%; height: 100%; display: block; }
+
+/* Bottom Nav */
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(13, 19, 32, 0.96); backdrop-filter: blur(12px); border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(5, 1fr); padding: 6px 0 10px; z-index: 100; }
+.nav-item { background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 9px; font-weight: 600; cursor: pointer; }
+.nav-item.active { color: var(--cyan); }
+.nav-item svg { width: 18px; height: 18px; }
+
+/* Hidden Settings Panel */
+.panel-config { background: var(--panel-glass); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 14px; display: none; }
+.panel-config.visible { display: block; }
+.field-row { display: flex; gap: 10px; margin-bottom: 8px; align-items: center; justify-content: space-between; font-size: 10.5px; color: var(--muted); }
+.field-row input, .field-row select { background: var(--bg); border: 1px solid var(--line); color: var(--text); padding: 5px 8px; border-radius: 7px; font-size: 10.5px; width: 100px; }
+</style>
+</head>
+<body>
+<div class="app">
+ <header class="topbar">
+  <div class="brand">
+   <div class="logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+     <path d="M2 12h3l2.5-6 4 12 3-8 2 2h5.5"/>
+     <circle cx="19.5" cy="6.5" r="2.2" fill="currentColor" stroke="none"/>
+    </svg>
+   </div>
+   <div>
+    <h1>MONITOREO DE SALA</h1>
+    <p>SISTEMA AMBIENTAL IOT</p>
+   </div>
+  </div>
+  <span class="pill" id="runState">● MODELO ACTIVO</span>
+ </header>
+
+ <div class="room-bar">
+  <div class="room-selector">
+   <span>🏫</span> <span class="room-name">Aula 302 • Edificio B ▾</span>
+  </div>
+  <div class="time-box">
+   <span style="font-size:9px">Hoy,</span>
+   <strong id="clock">18:35:04</strong>
+  </div>
+ </div>
+
+ <div class="mic-banner" id="micBanner">
+  <div class="mic-info">
+   <div class="mic-icon-wrap" id="micIconIndicator">🎙️</div>
+   <div class="mic-text">
+    <strong id="micStateText">Micrófono Inactivo</strong>
+    <span id="micSubText">Toca para iniciar medición</span>
+   </div>
+  </div>
+  <div style="display:flex; align-items:center; gap:8px;">
+   <div class="mic-bars" id="micBarsAnim" style="display:none">
+    <div class="mic-bar"></div><div class="mic-bar"></div><div class="mic-bar"></div><div class="mic-bar"></div>
+   </div>
+   <button class="btn-pause" id="pauseBtn">Ⅱ Pausar</button>
+  </div>
+ </div>
+
+ <section class="heading">
+  <div>
+   <h2>Resumen de la Sala</h2>
+   <p>Mediciones en tiempo real y estimación IoT</p>
+  </div>
+  <span class="badge-precision">Alta Precisión</span>
+ </section>
+
+ <div class="grid-metrics">
+  <article class="metric-card">
+   <div class="metric-top"><span>TEMPERATURA</span><span>🌡️</span></div>
+   <div class="value metric-val"><span id="tempValue">22.6</span><span>°C</span></div>
+   <div class="metric-sub">Modelo térmico orientativo</div>
+   <div><span class="badge ok" id="tempStatus">ÓPTIMA</span></div>
+  </article>
+
+  <article class="metric-card">
+   <div class="metric-top"><span>CO₂ ESTIMADO</span><span>☁️</span></div>
+   <div class="value metric-val"><span id="co2Value">468</span><span>ppm</span></div>
+   <div class="metric-sub">Ventilación y ocupación</div>
+   <div><span class="badge ok" id="co2Status">ADECUADO</span></div>
+  </article>
+
+  <article class="metric-card">
+   <div class="metric-top"><span>RUIDO AULA</span><span>🔊</span></div>
+   <div class="value metric-val"><span id="noiseValue">42</span><span>dB</span></div>
+   <div class="metric-sub" id="noiseHint">Silencioso</div>
+   <div class="noise-bar"><div class="noise-bar-fill" id="noiseBarFill" style="width:42%"></div></div>
+   <div style="margin-top:6px"><span class="badge ok" id="noiseStatus">MODERADO</span></div>
+  </article>
+
+  <article class="metric-card">
+   <div class="metric-top"><span>HUMEDAD</span><span>💧</span></div>
+   <div class="value metric-val"><span id="humValue">54</span><span>% HR</span></div>
+   <div class="metric-sub">Confort respiratorio</div>
+   <div><span class="badge ok" id="humStatus">CONFORT</span></div>
+  </article>
+ </div>
+
+ <article class="quality-card">
+  <div class="quality-header">
+   <div>
+    <small>ÍNDICE AMBIENTAL GLOBAL</small>
+    <h3>Calidad General de la Sala</h3>
+   </div>
+   <span class="badge ok" id="globalBadge" style="font-size:10px; padding:4px 8px;">✓ Óptima (88/100)</span>
+  </div>
+  <div class="quality-main">
+   <div class="quality-ring" id="qualityEmoji" role="img" aria-label="Calidad óptima">😊</div>
+   <div class="quality-desc">
+    <strong id="qualityTitle">Condición propicia para el aprendizaje</strong>
+    <p id="qualityText">La ventilación cruzada mantiene el CO₂ bajo los 500 ppm y el nivel acústico permite alta concentración docente.</p>
+   </div>
+  </div>
+  <div class="sub-metrics">
+   <div class="sub-metric-item"><span>Térmico</span><strong id="subTerm">96%</strong></div>
+   <div class="sub-metric-item"><span>Acústico</span><strong id="subAcou">82%</strong></div>
+   <div class="sub-metric-item"><span>Ventilación</span><strong id="subVent">91%</strong></div>
+  </div>
+ </article>
+
+ <div class="panel-config" id="configPanel">
+  <h3 style="margin:0 0 10px; font-size:12px; color:var(--cyan);">Configuración del Modelo</h3>
+  <div class="field-row"><span>Ocupantes (pers.)</span><input id="people" type="number" value="40" min="1" max="200"></div>
+  <div class="field-row"><span>Superficie (m²)</span><input id="area" type="number" value="60" min="10" max="500"></div>
+  <div class="field-row"><span>Altura (m)</span><input id="height" type="number" value="3" step="0.1" min="2" max="6"></div>
+  <div class="field-row"><span>Ventilación</span><select id="vent"><option value="1">Limitada</option><option value="4" selected>Mecánica</option><option value="6">Alta</option></select></div>
+ </div>
+
+ <article class="chart-card">
+  <div class="chart-header">
+   <div>
+    <h3>Evolución Ambiental</h3>
+    <small>Historial reciente sincronizado</small>
+   </div>
+   <div class="time-tabs">
+    <button class="time-tab active">1Hora</button>
+    <button class="time-tab">Hoy</button>
+    <button class="time-tab">Semana</button>
+   </div>
+  </div>
+  <div class="chart-legend">
+   <span><i class="dot" style="background:var(--blue)"></i>Temp. (<span id="legendTemp">22.6°C</span>)</span>
+   <span><i class="dot" style="background:var(--cyan)"></i>CO₂ (<span id="legendCo2">468 ppm</span>)</span>
+   <span><i class="dot" style="background:var(--purple)"></i>Ruido (<span id="legendNoise">42 dB</span>)</span>
+  </div>
+  <div class="chart-wrap"><canvas id="chart"></canvas></div>
+ </article>
+</div>
+
+<nav class="bottom-nav">
+ <button class="nav-item active" id="navPanel">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+  Panel
+ </button>
+ <button class="nav-item" id="navHist">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+  Histórico
+ </button>
+ <button class="nav-item" id="navAulas">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  Aulas
+ </button>
+ <button class="nav-item" id="navAlerts">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+  Alertas
+ </button>
+ <button class="nav-item" id="navSettings">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  Ajustes
+ </button>
+</nav>
+
+<script>
+const $=id=>document.getElementById(id);
+let paused=false, micStream=null, audioContext=null, analyser=null, micFrame=null;
+let co2=468, temp=22.6, noise=42, hum=54, history=[];
+const outdoorCO2=420;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+function getParams(){
+ return {
+  people: Number($('people').value)||40,
+  area: Number($('area').value)||60,
+  height: Number($('height').value)||3,
+  ach: Number($('vent').value)||4
+ };
+}
+
+function updateStatus(){
+ const p=getParams(), vol=p.area*p.height, dt=3;
+ const gen=(p.people*0.004/1000)/vol*1e6;
+ const rem=(p.ach/3600)*(co2-outdoorCO2);
+ if(!paused){
+  co2=clamp(co2+(gen-rem)*dt, 400, 3000);
+  temp=clamp(temp + (p.people*75/(vol*1200) - (p.ach/3600)*(temp-21))*dt, 16, 32);
+  hum=clamp(50 + (p.people*0.05) - (p.ach*0.5), 30, 80);
+ }
+
+ const co2State=co2<1000?['ADECUADO','ok']:co2<1500?['ELEVADO','warn']:['ALTO','bad'];
+ const tempState=temp>=20&&temp<=26?['ÓPTIMA','ok']:['REVISAR','warn'];
+ const noiseState=noise<50?['MODERADO','ok']:noise<75?['ALTO','warn']:['CRÍTICO','bad'];
+ const humState=hum>=40&&hum<=65?['CONFORT','ok']:['REVISAR','warn'];
+
+ setBadge('co2Status', co2State);
+ setBadge('tempStatus', tempState);
+ setBadge('noiseStatus', noiseState);
+ setBadge('humStatus', humState);
+
+ $('co2Value').textContent=Math.round(co2);
+ $('tempValue').textContent=temp.toFixed(1);
+ $('noiseValue').textContent=Math.round(noise);
+ $('humValue').textContent=Math.round(hum);
+
+ $('legendTemp').textContent=temp.toFixed(1)+'°C';
+ $('legendCo2').textContent=Math.round(co2)+' ppm';
+ $('legendNoise').textContent=Math.round(noise)+' dB';
+ $('noiseBarFill').style.width=clamp(noise,5,100)+'%';
+
+ const globalLevel = co2State[1]==='bad'||noiseState[1]==='bad' ? 'bad' : co2State[1]==='warn'||noiseState[1]==='warn' ? 'warn' : 'ok';
+ const emojiEl=$('qualityEmoji');
+ const score = globalLevel==='ok'?88:globalLevel==='warn'?72:45;
+ 
+ if(globalLevel==='bad'){
+  emojiEl.textContent='😠';
+  emojiEl.style.borderColor='var(--red)';
+  emojiEl.style.boxShadow='0 0 16px rgba(251,113,133,0.3)';
+  $('globalBadge').className='badge bad';
+  $('globalBadge').textContent=`Crítica (${score}/100)`;
+  $('qualityTitle').textContent='Condiciones ambientales críticas';
+  $('qualityText').textContent='El CO₂ o nivel sonoro superan los límites recomendados. Aumente la ventilación.';
+ } else if(globalLevel==='warn'){
+  emojiEl.textContent='😐';
+  emojiEl.style.borderColor='var(--yellow)';
+  emojiEl.style.boxShadow='0 0 16px rgba(250,204,21,0.25)';
+  $('globalBadge').className='badge warn';
+  $('globalBadge').textContent=`Regular (${score}/100)`;
+  $('qualityTitle').textContent='Atención requerida en el aula';
+  $('qualityText').textContent='Algunas variables muestran niveles moderados. Se sugiere monitoreo constante.';
+ } else {
+  emojiEl.textContent='😊';
+  emojiEl.style.borderColor='var(--green)';
+  emojiEl.style.boxShadow='0 0 16px rgba(52,211,153,0.25)';
+  $('globalBadge').className='badge ok';
+  $('globalBadge').textContent=`Óptima (${score}/100)`;
+  $('qualityTitle').textContent='Condición propicia para el aprendizaje';
+  $('qualityText').textContent='La ventilación cruzada mantiene el CO₂ bajo los 500 ppm y el nivel acústico permite alta concentración docente.';
+ }
+
+ $('subTerm').textContent=Math.round(100 - Math.abs(temp-22)*6)+'%';
+ $('subAcou').textContent=Math.round(100 - Math.abs(noise-35)*0.8)+'%';
+ $('subVent').textContent=Math.round(100 - (co2-400)/25)+'%';
+
+ history.push({temp, co2, noise});
+ if(history.length>25) history.shift();
+ drawChart();
+}
+
+function setBadge(id, state){
+ $(id).textContent=state[0];
+ $(id).className='badge '+state[1];
+}
+
+function drawChart(){
+ const canvas=$('chart'), ctx=canvas.getContext('2d'), rect=canvas.getBoundingClientRect(), dpr=window.devicePixelRatio||1;
+ canvas.width=rect.width*dpr; canvas.height=rect.height*dpr;
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ const w=canvas.width/dpr, h=canvas.height/dpr;
+ ctx.clearRect(0,0,w,h);
+
+ if(history.length<2)return;
+ const sets=[
+  {key:'temp', min:15, max:30, color:'#38bdf8'},
+  {key:'co2', min:400, max:1500, color:'#22d3ee'},
+  {key:'noise', min:20, max:90, color:'#c084fc'}
+ ];
+
+ sets.forEach(s=>{
+  ctx.strokeStyle=s.color; ctx.lineWidth=2; ctx.lineJoin='round';
+  ctx.beginPath();
+  history.forEach((p,i)=>{
+   let x=(i/(history.length-1))*w;
+   let y=h - ((clamp(p[s.key], s.min, s.max)-s.min)/(s.max-s.min))*h;
+   if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+ });
+}
+
+async function toggleMic(){
+ if(micStream){
+  stopMic();
+ } else {
+  try{
+   micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+   audioContext=new (window.AudioContext||window.webkitAudioContext)();
+   const src=audioContext.createMediaStreamSource(micStream);
+   analyser=audioContext.createAnalyser(); analyser.fftSize=512;
+   src.connect(analyser);
+   const data=new Uint8Array(analyser.frequencyBinCount);
+   
+   function sampleAudio(){
+    if(!analyser)return;
+    analyser.getByteFrequencyData(data);
+    let sum=data.reduce((a,b)=>a+b,0);
+    let avg=sum/data.length;
+    noise=clamp(Math.round(avg*1.2 + 25), 30, 95);
+    micFrame=requestAnimationFrame(sampleAudio);
+   }
+   sampleAudio();
+   $('micIconIndicator').textContent='🔊';
+   $('micStateText').textContent='Micrófono Activo';
+   $('micSubText').textContent='Midiendo decibeles';
+   $('micBarsAnim').style.display='flex';
+   $('micBanner').style.borderColor='var(--purple)';
+  }catch(e){
+   alert('No se pudo acceder al micrófono.');
+  }
+ }
+}
+
+function stopMic(){
+ if(micFrame)cancelAnimationFrame(micFrame);
+ if(micStream)micStream.getTracks().forEach(t=>t.stop());
+ micStream=null; analyser=null;
+ if(audioContext){audioContext.close(); audioContext=null;}
+ $('micIconIndicator').textContent='🎙️';
+ $('micStateText').textContent='Micrófono Inactivo';
+ $('micSubText').textContent='Toca para iniciar medición';
+ $('micBarsAnim').style.display='none';
+ $('micBanner').style.borderColor='rgba(192, 132, 252, 0.35)';
+ noise=42;
+}
+
+$('micBanner').onclick=toggleMic;
+$('pauseBtn').onclick=(e)=>{
+ e.stopPropagation();
+ paused=!paused;
+ $('pauseBtn').textContent=paused?'▶ Reanudar':'Ⅱ Pausar';
+ $('runState').innerHTML=paused?'<span style="color:var(--yellow)">⏸</span> PAUSADO':'● MODELO ACTIVO';
+};
+
+['navPanel','navHist','navAulas','navAlerts','navSettings'].forEach((id, idx)=>{
+ $(id).onclick=()=>{
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  $(id).classList.add('active');
+  if(idx===2 || idx===4){
+   $('configPanel').classList.toggle('visible');
+  } else {
+   $('configPanel').classList.remove('visible');
+  }
+ };
+});
+
+setInterval(()=>{
+ $('clock').textContent=new Date().toLocaleTimeString('es-CL');
+ updateStatus();
+}, 3000);
+
+updateStatus();
+</script>
+</body>
+</html>
