@@ -68,10 +68,11 @@ body {
 .btn-pause { background: var(--panel); border: 1px solid var(--line); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
 .btn-pause:hover { border-color: var(--blue); }
 
-.heading { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-end; }
-.heading h2 { font-size: 18px; font-weight: 800; margin: 0 0 2px; letter-spacing: -0.4px; }
-.heading p { margin: 0; color: var(--muted); font-size: 10.5px; }
-.badge-precision { font-size: 9.5px; font-weight: 700; padding: 4px 10px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: var(--blue); border: 1px solid rgba(56, 189, 248, 0.4); cursor: pointer; display: inline-block; text-align: center; }
+.heading { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+.heading h2 { font-size: 17px; font-weight: 800; margin: 0 0 2px; letter-spacing: -0.4px; }
+.heading p { margin: 0; color: var(--muted); font-size: 10px; }
+.badge-gps { font-size: 10px; font-weight: 700; padding: 6px 12px; border-radius: 10px; background: rgba(56, 189, 248, 0.18); color: var(--blue); border: 1px solid rgba(56, 189, 248, 0.4); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; }
+.badge-gps:hover { background: rgba(56, 189, 248, 0.28); }
 
 .grid-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
 .metric-card { background: var(--panel-glass); backdrop-filter: blur(10px); border: 1px solid var(--line); border-radius: 14px; padding: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
@@ -173,7 +174,7 @@ body {
    <p id="locationSub">Mediciones en tiempo real y GPS</p>
   </div>
   <div>
-   <span class="badge-precision" id="gpsBtn">🌍 Sincronizar GPS</span>
+   <button class="badge-gps" id="gpsBtn">🌍 Sincronizar GPS</button>
   </div>
  </section>
 
@@ -314,7 +315,7 @@ function updateStatus(){
 
  const co2State=co2<1000?['ADECUADO','ok']:co2<1500?['ELEVADO','warn']:['ALTO','bad'];
  const tempState=temp>=19&&temp<=26?['ÓPTIMA','ok']:['REVISAR','warn'];
- const noiseState = noise < 55 ? ['MODERADO','ok'] : noise < 75 ?['ALTO','warn'] : ['CRÍTICO','bad'];
+ const noiseState = noise < 55 ? ['MODERADO','ok'] : noise < 75 ? ['ALTO','warn'] : ['CRÍTICO','bad'];
  const humState=hum>=35&&hum<=65?['CONFORT','ok']:['REVISAR','warn'];
 
  setBadge('co2Status', co2State);
@@ -406,9 +407,12 @@ function drawChart(){
  });
 }
 
-// Solicitud GPS automática al iniciar
+// Geolocalización y Clima real
 function requestGeolocation(){
- if(!navigator.geolocation) return;
+ if(!navigator.geolocation){
+  alert('Geolocalización no soportada en este navegador.');
+  return;
+ }
  $('gpsBtn').textContent = '📍 Localizando...';
  navigator.geolocation.getCurrentPosition(async pos=>{
   const lat = pos.coords.latitude;
@@ -428,13 +432,14 @@ function requestGeolocation(){
    $('gpsBtn').textContent = '🌍 Sincronizar GPS';
   }
  }, err=>{
+  alert('Permiso de ubicación denegado o no disponible.');
   $('gpsBtn').textContent = '🌍 Sincronizar GPS';
  }, {timeout: 10000});
 }
 
 $('gpsBtn').onclick = requestGeolocation;
 
-// Micrófono con ultra-baja latencia y alta sensibilidad
+// Micrófono ultra sensible e inmediato
 async function toggleMic(){
  if(micStream){
   stopMic();
@@ -444,8 +449,8 @@ async function toggleMic(){
    audioContext=new (window.AudioContext||window.webkitAudioContext)();
    const src=audioContext.createMediaStreamSource(micStream);
    analyser=audioContext.createAnalyser(); 
-   analyser.fftSize=128; // Mayor velocidad de respuesta
-   analyser.smoothingTimeConstant = 0.2; // Menos retraso (más inmediato)
+   analyser.fftSize=64; // Respuesta inmediata
+   analyser.smoothingTimeConstant = 0.1; 
    src.connect(analyser);
    const data=new Uint8Array(analyser.frequencyBinCount);
    
@@ -455,8 +460,8 @@ async function toggleMic(){
     let sum=data.reduce((a,b)=>a+b,0);
     let avg=sum/data.length;
     
-    // Cálculo inmediato y sensible a la voz/gritos
-    let calculatedDb = Math.round(avg * 2.2 + 28);
+    // Cálculo ultra sensible a la voz y gritos
+    let calculatedDb = Math.round(avg * 2.5 + 26);
     noise = clamp(calculatedDb, 35, 99);
 
     micFrame=requestAnimationFrame(sampleAudio);
@@ -468,7 +473,7 @@ async function toggleMic(){
    $('micBarsAnim').style.display='flex';
    $('micBanner').style.borderColor='var(--purple)';
   }catch(e){
-   alert('No se pudo acceder al micrófono. Permiso denegado.');
+   alert('No se pudo acceder al micrófono.');
   }
  }
 }
@@ -509,11 +514,9 @@ $('pauseBtn').onclick=(e)=>{
 setInterval(()=>{
  $('clock').textContent=new Date().toLocaleTimeString('es-CL');
  updateStatus();
-}, 1500);
+}, 1200);
 
-// Lanzar GPS automáticamente al cargar la página
 window.addEventListener('load', () => {
- requestGeolocation();
  updateStatus();
 });
 </script>
